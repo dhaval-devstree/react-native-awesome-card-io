@@ -1,23 +1,9 @@
-// React Native library build.gradle - self-contained for JitPack
+// Remove buildscript - using pluginManagement from settings.gradle
 
-buildscript {
-    ext {
-        buildToolsVersion = "36.0.0"
-        minSdkVersion = 24
-        compileSdkVersion = 36
-        targetSdkVersion = 36
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.0'
-    }
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
 }
-
-apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -38,12 +24,17 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     lintOptions {
         warning 'InvalidPackage'
         abortOnError false
     }
 
-    // Optional: ensures AAR is published correctly
+    // For AGP 8.x compatibility
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -73,7 +64,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.dhaval-devstree'
                 artifactId = 'react-native-awesome-card-io'
-                version = '1.0.2'
+                version = '1.0.3'
             }
         }
     }

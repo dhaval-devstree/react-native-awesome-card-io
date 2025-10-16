@@ -11,12 +11,12 @@ def safeExtGet(prop, fallback) {
 
 android {
     namespace "com.reactnativeawesomecardio"
-    compileSdkVersion safeExtGet('compileSdkVersion', 36)
-    buildToolsVersion safeExtGet('buildToolsVersion', '36.0.0')
+    compileSdkVersion safeExtGet('compileSdkVersion', 31)
+    buildToolsVersion safeExtGet('buildToolsVersion', '31.0.0')
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 24)
-        targetSdkVersion safeExtGet('targetSdkVersion', 36)
+        minSdkVersion safeExtGet('minSdkVersion', 21)
+        targetSdkVersion safeExtGet('targetSdkVersion', 31)
         versionCode 1
         versionName "1.0"
         ndk {
@@ -64,7 +64,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.dhaval-devstree'
                 artifactId = 'react-native-awesome-card-io'
-                version = '1.0.3'
+                version = '1.0.4'
             }
         }
     }

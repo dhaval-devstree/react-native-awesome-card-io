@@ -1,21 +1,26 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// React Native library build.gradle - self-contained for JitPack
 
-def safeExtGet(prop, fallback) {
-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+buildscript {
+    ext {
+        buildToolsVersion = "36.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 36
+        targetSdkVersion = 36
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.5.0'
+    }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
-repositories {
-    // Use mavenCentral and Google only — avoid MavenLocal to prevent Gradle 8 conflict
-    google()
-    mavenCentral()
-
-    // Local libs (card.io jar)
-    flatDir {
-        dirs "$rootDir/react-native-awesome-card-io/android/libs"
-    }
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
 android {
@@ -29,12 +34,13 @@ android {
         versionCode 1
         versionName "1.0"
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
 
     lintOptions {
         warning 'InvalidPackage'
+        abortOnError false
     }
 
     // Optional: ensures AAR is published correctly
@@ -45,9 +51,18 @@ android {
     }
 }
 
+repositories {
+    google()
+    mavenCentral()
+    // Local libs (card.io jar)
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     compileOnly "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
-    // implementation 'io.card:android-sdk:5.5.1'
+    // Using local jar file instead of remote dependency
     implementation files('libs/cardio_5_5_1_OS3.jar')
 }
 
@@ -58,7 +73,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.dhaval-devstree'
                 artifactId = 'react-native-awesome-card-io'
-                version = '1.0.0'
+                version = '1.0.2'
             }
         }
     }

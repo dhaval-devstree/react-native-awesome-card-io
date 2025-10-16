@@ -10,7 +10,7 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    namespace "com.reactnativeawesomecardio"
+    namespace "com.cardio"
     compileSdkVersion safeExtGet('compileSdkVersion', 'android-31')
     // Remove buildToolsVersion - let AGP use default
     

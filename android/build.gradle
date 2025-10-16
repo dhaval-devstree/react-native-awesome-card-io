@@ -4,15 +4,22 @@ def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
 repositories {
+    // Use mavenCentral and Google only — avoid MavenLocal to prevent Gradle 8 conflict
+    google()
+    mavenCentral()
+
+    // Local libs (card.io jar)
     flatDir {
         dirs "$rootDir/react-native-awesome-card-io/android/libs"
     }
 }
 
-apply plugin: 'com.android.library'
-
 android {
+    namespace "com.reactnativeawesomecardio"
     compileSdkVersion safeExtGet('compileSdkVersion', 36)
     buildToolsVersion safeExtGet('buildToolsVersion', '36.0.0')
 
@@ -25,8 +32,16 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+
     lintOptions {
         warning 'InvalidPackage'
+    }
+
+    // Optional: ensures AAR is published correctly
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
     }
 }
 
@@ -34,4 +49,17 @@ dependencies {
     compileOnly "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
     // implementation 'io.card:android-sdk:5.5.1'
     implementation files('libs/cardio_5_5_1_OS3.jar')
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.dhaval-devstree'
+                artifactId = 'react-native-awesome-card-io'
+                version = '1.0.0'
+            }
+        }
+    }
 }

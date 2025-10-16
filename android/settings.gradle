@@ -14,7 +14,18 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url "$settingsDir/../node_modules/react-native/android" }
+        
+        // React Native repository - conditional for local vs JitPack
+        def reactNativeDir = file("$settingsDir/../node_modules/react-native/android")
+        if (reactNativeDir.exists()) {
+            maven { url "$settingsDir/../node_modules/react-native/android" }
+        }
+        
+        // JitPack repository for React Native fallback
+        maven { url 'https://jitpack.io' }
+        
+        // Local flatDir for JAR files  
+        flatDir { dirs "$settingsDir/libs" }
     }
 }
 

@@ -12,8 +12,8 @@ def safeExtGet(prop, fallback) {
 android {
     namespace "com.reactnativeawesomecardio"
     compileSdkVersion safeExtGet('compileSdkVersion', 'android-31')
-    buildToolsVersion safeExtGet('buildToolsVersion', '31.0.0')
-
+    // Remove buildToolsVersion - let AGP use default
+    
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', 21)
         targetSdkVersion safeExtGet('targetSdkVersion', 31)
@@ -42,18 +42,18 @@ android {
     }
 }
 
-repositories {
-    google()
-    mavenCentral()
-    // Local libs (card.io jar)
-    flatDir {
-        dirs 'libs'
-    }
-}
+// Remove repositories block to use settings.gradle repos
+// This fixes the "project declares repositories" conflict
 
 dependencies {
-    compileOnly "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
-    // Using local jar file instead of remote dependency
+    // For JitPack builds - use provided scope to avoid resolution issues
+    if (findProject(':ReactAndroid') != null) {
+        compileOnly project(':ReactAndroid')
+    } else {
+        compileOnly 'com.facebook.react:react-native:0.70.+' // Fallback version
+    }
+    
+    // Local JAR dependency
     implementation files('libs/cardio_5_5_1_OS3.jar')
 }
 
@@ -64,7 +64,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.dhaval-devstree'
                 artifactId = 'react-native-awesome-card-io'
-                version = '1.0.5'
+                version = '1.0.6'
             }
         }
     }
